@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, intial-scale1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="bowiestatebank/css/bowiestatebank.css">
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-auth-compat.js"></script>
+    <title>Bowie State Bank | Login</title>
+</head>
+<body>
+    <div class="box">
+        <div class="container">
+             <!-- Login Form -->
+             <form id="login-form">
+                <div class="top-header">
+                    <header>Login</header>
+                </div>
+                <div class="input-field">
+                    <input type="text" class="input" placeholder="Email" id="email">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="input-field">
+                    <input type="password" class="input" placeholder="Password" id="password">
+                    <i class="fa fa-lock"></i>
+                </div>
+                <div class="input-field">
+                    <input type="submit" class="submit" value="Login" id="login-btn"/>
+                </div>
+                <div class="bottom">
+                    <div class="left">
+                        <input type="checkbox" id="check">
+                        <label for="check"> Remember Me</label>
+                    </div>
+                    <div class="right">
+                        <label><a href="#">Forgot password?</a> </label>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Sign-up Form -->
+            <form id="signup-form" style="display: none;">
+                <div class="top-header">
+                    <header>Sign Up</header>
+                </div>
+                <div class="input-field">
+                    <input type="text" class="input" placeholder="Email" id="signup-email">
+                </div>
+                <div class="input-field">
+                    <input type="password" class="input" placeholder="Password" id="signup-password">
+                </div>
+                <div class="input-field">
+                    <input type="submit" class="submit" value="Sign Up" id="signup-btn"/>
+                </div>
+            </form>
+
+            <!-- Toggle Button -->
+            <div class="bottom">
+                <div class="left">
+                    <label>Don't have an account?</label>
+                </div>
+                <div class="right">
+                    <button onclick="toggleForm()">Sign Up</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            var loginForm = document.getElementById("login-form");
+            var signupForm = document.getElementById("signup-form");
+            var toggleBtn = document.querySelector(".bottom button");
+    
+            if (loginForm.style.display === "none") {
+                loginForm.style.display = "block";
+                signupForm.style.display = "none";
+                toggleBtn.innerText = "Sign Up";
+            } else {
+                loginForm.style.display = "none";
+                signupForm.style.display = "block";
+                toggleBtn.innerText = "Login";
+            }
+        }
+    </script>
+     <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-auth.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCG1FM4SRo9FS_fliVlY3WM-40315uU6iI",
+            authDomain: "login-9a924.firebaseapp.com",
+            projectId: "login-9a924",
+            storageBucket: "login-9a924.appspot.com",
+            messagingSenderId: "726196954317",
+            appId: "1:726196954317:web:4d473bee8208e68a06f584"
+        };
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        console.log(app);
+
+        const auth = getAuth();
+
+        // Sign In
+        function signIn(event) {
+            event.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            // Validate email and password (you may add more complex validation rules)
+            if (email === "" || password === "") {
+                alert("Please fill in both email and password fields.");
+                return;
+            }
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed in
+                    const user = userCredential.user;
+                    console.log("User signed in successfully:", user);
+                    window.location.href = "home.html?email=" + encodeURIComponent(email);
+                    alert("Login Successfully");
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.error("Error signing in:", errorCode, errorMessage);
+                });
+        }
+        document.getElementById("login-form").addEventListener("submit", signIn);
+
+        //Sign Up
+        function signUp(event) {
+            event.preventDefault();
+            const email = document.getElementById("signup-email").value;
+            const password = document.getElementById("signup-password").value;
+
+            // Validate email and password (you may add more complex validation rules)
+            if (email === "" || password === "") {
+                alert("Please fill in both email and password fields.");
+                return;
+            }
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed in
+                    const user = userCredential.user;
+                    console.log("User signed up successfully:", user);
+                    alert("Sign Up Successfully");
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.error("Error signing up:", errorCode, errorMessage);
+                });
+        }
+        document.getElementById("signup-form").addEventListener("submit", signUp);
+      </script>   
+
+</body>
+</html>
